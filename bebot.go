@@ -9,15 +9,12 @@ import (
 	"strings"
 )
 
-// Usage:
-// b := Bebot{}
-// added := b.AddLog("testbot", "#test", "nick", "hello world3")
-// fmt.Println("Rows added:", added)
+//Bebot is the main brains behind the database access for the irc bot
 type Bebot struct{}
 
 var db *sql.DB
 
-//Adds a new message to the database
+//AddLog adds a new message to the database
 func (b Bebot) AddLog(server string, channel string, nick string, message string) bool {
 	if db == nil {
 		var err error
@@ -42,17 +39,17 @@ func (b Bebot) AddLog(server string, channel string, nick string, message string
 	if err != nil {
 		if strings.Contains(err.Error(), "UNIQUE constraint failed: logs.hash") {
 			glog.Info("Dropping duplicate message")
-			return false
 		} else {
 			fmt.Println(err)
 			glog.Fatal(err)
 		}
+		return false
 	}
 
 	return true
 }
 
-// Get logs for a specific nickname
+// GetLog gets a random message for a specific nickname
 func (b Bebot) GetLog(nick string) string {
 	if db == nil {
 		var err error
@@ -62,22 +59,11 @@ func (b Bebot) GetLog(nick string) string {
 		}
 	}
 
-	rows, err := db.Query("SELECT id, server, channel, message FROM logs WHERE nick = $1 ORDER BY RANDOM() LIMIT 1", nick)
+	var message string
+	err := db.QueryRow("SELECT message FROM logs WHERE nick = $1 ORDER BY RANDOM() LIMIT 1", nick).Scan(&message)
 	if err != nil {
 		glog.Fatal(err)
+		return ""
 	}
-
-	for rows.Next() {
-		var id int
-		var server, channel, message string
-		if err := rows.Scan(&id, &server, &channel, &message); err != nil {
-			glog.Fatal(err)
-		}
-		fmt.Printf("id:%d - [%s/%s] (%s) %s\n", id, server, channel, nick, message)
-		return message
-	}
-	if err := rows.Err(); err != nil {
-		glog.Fatal(err)
-	}
-	return ""
+	return message
 }

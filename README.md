@@ -1,6 +1,12 @@
 # Goelo 3.GO
 
+Generally I learn a new programming language by writing an IRC bot. I would like to replace my ruby IRC bot with a statically compiled bot that is just one binary. So here we are.
+
 ## Dependencies
+- IRC library: [irc-event](https://github.com/thoj/go-ircevent)
+- SQL library: [go-sqlite3](https://github.com/mattn/go-sqlite3)
+- Log librray: [glog](http://github.com/golang/glog)
+
 ```
 go get github.com/golang/glog
 go get github.com/thoj/go-ircevent

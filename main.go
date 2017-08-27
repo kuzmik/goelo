@@ -8,14 +8,14 @@ import (
 
 /*
 &irc.Event{
-    Code:"PRIVMSG",
-    Raw:":nick!nick@moron5.com PRIVMSG #test :imitate",
-    Nick:"nick",
-    Host:"moron5.com",
-    Source:"nick!nick@moron5.com",
-    User:"nick",
-    Arguments:[]string{"#test", "imitate"},
-    Connection:(*irc.Connection)(0xc4200a4000)
+Code:"PRIVMSG",
+Raw:":nick!nick@moron5.com PRIVMSG #test :imitate",
+Nick:"nick",
+Host:"moron5.com",
+Source:"nick!nick@moron5.com",
+User:"nick",
+Arguments:[]string{"#test", "imitate"},
+Connection:(*irc.Connection)(0xc4200a4000)
 }
 */
 
