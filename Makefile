@@ -4,7 +4,7 @@ SHELL := /bin/bash
 TARGET := $(shell echo $${PWD\#\#*/})
 
 # These will be provided to the target
-VERSION := 1.0.0
+VERSION := 0.1.0
 BUILD := `git rev-parse HEAD`
 BUILD_TIME=`date +%FT%T%z`
 

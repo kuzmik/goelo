@@ -5,12 +5,14 @@ Generally I learn a new programming language by writing an IRC bot. I would like
 ## Dependencies
 - IRC library: [irc-event](https://github.com/thoj/go-ircevent)
 - SQL library: [go-sqlite3](https://github.com/mattn/go-sqlite3)
-- Log librray: [glog](http://github.com/golang/glog)
+- Log library: [glog](http://github.com/golang/glog)
+- Twitter library: [go-twitter](https://github.com/dghubble/go-twitter)
 
 ```
 go get github.com/golang/glog
 go get github.com/thoj/go-ircevent
 go get github.com/mattn/go-sqlite3
+go get github.com/dghubble/go-twitter/twitter
 ```
 
 ## MVP Requirements

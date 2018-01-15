@@ -1,4 +1,8 @@
+# database
 data/*.sqlite3
+
+# config with sensitive keys
+data/config.json
 
 # binary
 goelo
