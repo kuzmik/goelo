@@ -15,6 +15,7 @@ import (
 func main() {
 	type Config struct {
 		Twitter struct {
+			ScreenName     string `json:"screen_name"`
 			ConsumerKey    string `json:"consumer_key"`
 			ConsumerSecret string `json:"consumer_secret"`
 			AccessKey      string `json:"oauth_token"`
@@ -41,9 +42,9 @@ func main() {
 		log.Fatal("Configuration missing")
 	}
 
-	config := oauth1.NewConfig(cfg.Twitter.ConsumerKey, cfg.Twitter.ConsumerSecret)
+	oauth := oauth1.NewConfig(cfg.Twitter.ConsumerKey, cfg.Twitter.ConsumerSecret)
 	token := oauth1.NewToken(cfg.Twitter.AccessKey, cfg.Twitter.AccessSecret)
-	httpClient := config.Client(oauth1.NoContext, token)
+	httpClient := oauth.Client(oauth1.NoContext, token)
 
 	// Twitter Client
 	client := twitter.NewClient(httpClient)
@@ -51,7 +52,10 @@ func main() {
 	// Convenience Demux demultiplexed stream messages
 	demux := twitter.NewSwitchDemux()
 	demux.Tweet = func(tweet *twitter.Tweet) {
-		fmt.Println(tweet.User.ScreenName, " -> ", tweet.Text)
+		if tweet.User.ScreenName == cfg.Twitter.ScreenName {
+			return
+		}
+		fmt.Println(tweet.User.ScreenName, "->", tweet.Text)
 	}
 	demux.DM = func(dm *twitter.DirectMessage) {
 		fmt.Println(dm.SenderID)
