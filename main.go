@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/getsentry/raven-go"
 	"github.com/thoj/go-ircevent"
 )
 
@@ -27,6 +28,8 @@ var (
 )
 
 func main() {
+	raven.SetDSN("https://d7ad690e9623491cb19250dbe64fc401@sentry.io/1213124")
+
 	flag.Parse()
 
 	fmt.Printf("Connecting to server \033[1m%s\033[0m on port \033[1m%d\033[0m\n", *server, *port)
@@ -74,6 +77,7 @@ func main() {
 	err := irccon.Connect(fmt.Sprintf("%s:%d", *server, *port))
 	if err != nil {
 		fmt.Printf("Err %s", err)
+		raven.CaptureErrorAndWait(err, nil)
 		return
 	}
 	irccon.Loop()
