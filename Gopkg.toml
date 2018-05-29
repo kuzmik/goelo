@@ -1,0 +1,27 @@
+[[constraint]]
+  branch = "master"
+  name = "github.com/dghubble/go-twitter"
+
+[[constraint]]
+  name = "github.com/dghubble/oauth1"
+  version = "0.4.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/getsentry/raven-go"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/golang/glog"
+
+[[constraint]]
+  name = "github.com/mattn/go-sqlite3"
+  version = "1.7.0"
+
+[[constraint]]
+  name = "github.com/thoj/go-ircevent"
+  version = "0.2.0"
+
+[prune]
+  go-tests = true
+  unused-packages = true

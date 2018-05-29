@@ -8,11 +8,14 @@ Generally I learn a new programming language by writing an IRC bot. I would like
 - Log library: [glog](http://github.com/golang/glog)
 - Twitter library: [go-twitter](https://github.com/dghubble/go-twitter)
 
+Uses `dep` now, so after clone just run:
 ```
-go get github.com/golang/glog
-go get github.com/thoj/go-ircevent
-go get github.com/mattn/go-sqlite3
-go get github.com/dghubble/go-twitter/twitter
+dep ensure
+```
+
+To add a new library, do
+```
+dep ensure -add github.com/stupid/package
 ```
 
 ## MVP Requirements
