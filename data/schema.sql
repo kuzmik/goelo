@@ -9,3 +9,4 @@ CREATE TABLE IF NOT EXISTS logs (
 );
 
 CREATE UNIQUE INDEX u_idx_hash ON logs(hash);
+

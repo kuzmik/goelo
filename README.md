@@ -8,14 +8,11 @@ Generally I learn a new programming language by writing an IRC bot. I would like
 - Log library: [glog](http://github.com/golang/glog)
 - Twitter library: [go-twitter](https://github.com/dghubble/go-twitter)
 
-Uses `dep` now, so after clone just run:
 ```
-dep ensure
-```
-
-To add a new library, do
-```
-dep ensure -add github.com/stupid/package
+go get -u github.com/golang/glog
+go get -u github.com/thoj/go-ircevent
+go get -u github.com/mattn/go-sqlite3
+go get -u github.com/dghubble/go-twitter/twitter
 ```
 
 ## MVP Requirements
@@ -27,5 +24,6 @@ dep ensure -add github.com/stupid/package
 
 
 ## TODO later
+* a console ui that allows text entry and sending to the server (see experiments dir)
 * Bebot nonesense (markov chains, replies on mentions based on a word)
 * The other plugins like last.fm, linkgrabber, etc

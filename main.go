@@ -3,7 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
+	// "github.com/davecgh/go-spew/spew"
 	"github.com/getsentry/raven-go"
+	"github.com/golang/glog"
 	"github.com/thoj/go-ircevent"
 )
 
@@ -23,8 +25,9 @@ Connection:(*irc.Connection)(0xc4200a4000)
 var (
 	server   = flag.String("server", "irc.slashnet.org", "IRC server to connect to")
 	port     = flag.Int("port", 6667, "Port to connect to")
+	ssl      = flag.Bool("ssl", false, "Connect with SSL")
 	password = flag.String("password", "", "Password to connect to the server")
-	channel  = flag.String("channel", "#goelo", "Channel to join")
+	channels = flag.String("channels", "#test", "Channels to join")
 )
 
 func main() {
@@ -37,7 +40,7 @@ func main() {
 	irccon := irc.IRC("goelo", "goelo")
 	irccon.VerboseCallbackHandler = true
 	irccon.Debug = false
-	irccon.UseTLS = false
+	irccon.UseTLS = *ssl
 	irccon.Version = "Textual IRC Client: www.textualapp.com — v4.1.8 (Flavor: Pasilla de Oaxaca Chile) via ZNC 1.6.5+deb1 - http://znc.in"
 	if *password != "" {
 		irccon.Password = *password
@@ -45,7 +48,7 @@ func main() {
 
 	// As soon as code 001 is received, join the channel
 	irccon.AddCallback("001", func(e *irc.Event) {
-		irccon.Join(*channel)
+		irccon.Join(*channels)
 	})
 
 	// If the bot is kicked from a channel, immediately rejoin it.
@@ -53,7 +56,7 @@ func main() {
 	irccon.AddCallback("KICK", func(event *irc.Event) {
 		go func(event *irc.Event) {
 			irccon.Join(event.Arguments[0])
-			fmt.Printf("I was kicked from %s by %s (%s)\n", event.Arguments[0], event.Nick, event.Arguments[2])
+			glog.Infof("I was kicked from %s by %s (%s)\n", event.Arguments[0], event.Nick, event.Arguments[2])
 		}(event)
 	})
 
@@ -70,13 +73,13 @@ func main() {
 		// Log all messages
 		go func(event *irc.Event) {
 			added := b.AddLog(*server, event.Arguments[0], event.Nick, event.Message())
-			fmt.Println("Added:", added)
+			glog.Infof("Added new log entry: ", added)
 		}(event)
 	})
 
 	err := irccon.Connect(fmt.Sprintf("%s:%d", *server, *port))
 	if err != nil {
-		fmt.Printf("Err %s", err)
+		glog.Fatal(err)
 		raven.CaptureErrorAndWait(err, nil)
 		return
 	}

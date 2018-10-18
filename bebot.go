@@ -31,7 +31,6 @@ func (b Bebot) AddLog(server string, channel string, nick string, message string
 
 	insert, err := db.Prepare("INSERT INTO logs (hash, server, channel, nick, message) VALUES ($1, $2, $3, $4, $5)")
 	if err != nil {
-		fmt.Println(err)
 		glog.Fatal(err)
 	}
 
@@ -40,7 +39,6 @@ func (b Bebot) AddLog(server string, channel string, nick string, message string
 		if strings.Contains(err.Error(), "UNIQUE constraint failed: logs.hash") {
 			glog.Info("Dropping duplicate message")
 		} else {
-			fmt.Println(err)
 			glog.Fatal(err)
 		}
 		return false
