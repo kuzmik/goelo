@@ -18,8 +18,8 @@ func main() {
 			ScreenName     string `json:"screen_name"`
 			ConsumerKey    string `json:"consumer_key"`
 			ConsumerSecret string `json:"consumer_secret"`
-			AccessKey      string `json:"oauth_token"`
-			AccessSecret   string `json:"oauth_secret"`
+			AccessKey      string `json:"access_token"`
+			AccessSecret   string `json:"access_secret"`
 		} `json:"twitter"`
 	}
 
@@ -46,35 +46,30 @@ func main() {
 	token := oauth1.NewToken(cfg.Twitter.AccessKey, cfg.Twitter.AccessSecret)
 	httpClient := oauth.Client(oauth1.NoContext, token)
 
-	// Twitter Client
+	// main Twitter client
 	client := twitter.NewClient(httpClient)
 
 	// Convenience Demux demultiplexed stream messages
 	demux := twitter.NewSwitchDemux()
 	demux.Tweet = func(tweet *twitter.Tweet) {
-		if tweet.User.ScreenName == cfg.Twitter.ScreenName {
-			return
-		}
-		fmt.Println(tweet.User.ScreenName, "->", tweet.Text)
+		fmt.Println(tweet.User.ScreenName, "-> ", tweet.Text)
 	}
 	demux.DM = func(dm *twitter.DirectMessage) {
-		fmt.Println(dm.SenderID)
+		fmt.Printf("%#v\n", dm)
 	}
+	// TODO: wire this up for likes i think?
 	demux.Event = func(event *twitter.Event) {
 		fmt.Printf("%#v\n", event)
 	}
 
-	fmt.Println("Starting user stream")
+	fmt.Println("Starting Stream...")
 
-	userParams := &twitter.StreamUserParams{
+	// USER (quick test: auth'd user likes a tweet -> event)
+	params := &twitter.StreamFilterParams{
+		Track:         []string{cfg.Twitter.ScreenName},
 		StallWarnings: twitter.Bool(true),
-		With:          "user",
-		Language:      []string{"en"},
 	}
-	stream, err := client.Streams.User(userParams)
-	if err != nil {
-		log.Fatal(err)
-	}
+	stream, _ := client.Streams.Filter(params)
 
 	// Receive messages until stopped or stream quits
 	go demux.HandleChan(stream.Messages)
@@ -84,6 +79,7 @@ func main() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGTERM)
 	log.Println(<-ch)
 
-	fmt.Println("Stopping user stream")
+	fmt.Println("Stopping Stream...")
+
 	stream.Stop()
 }
